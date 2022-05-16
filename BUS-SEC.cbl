@@ -21,21 +21,34 @@
        01 WS-AREAS.
            05 WS-ID-EMPL                    PIC 9(03).
            05 WS-FLAG                       PIC 9.
+           05 WS-RES                        PIC X.
 
        PROCEDURE DIVISION.
        010-INITIAL.
            PERFORM 100-ABRIR.
-           PERFORM 101-CONSULTA UNTIL WS-FLAG EQUAL 1.
-           PERFORM 100-CERRAR.
+           PERFORM 100-PROCESO.
+           PERFORM 101-MAS UNTIL WS-RES = 'N'.
+
+
        STOP RUN.
 
        100-ABRIR.
            OPEN INPUT EMPLEADO.
 
-       100-CERRAR.
-           CLOSE EMPLEADO.
+       100-PROCESO.
+           DISPLAY 'ID' ACCEPT WS-ID-EMPL.
+           PERFORM 101-PROCESO UNTIL WS-FLAG EQUAL 1.
 
-       101-CONSULTA.
-               READ EMPLEADO AT END MOVE 1 TO WS-FLAG
+           101-PROCESO.
+               READ EMPLEADO AT END CLOSE EMPLEADO
+               MOVE 1 TO WS-FLAG PERFORM 101-MAS
                NOT AT END
-               DISPLAY REG-EMPL.
+               IF WS-ID-EMPL EQUAL ID-EMPL
+                   DISPLAY REG-EMPL.
+
+           101-MAS.
+               DISPLAY 'CONSULTAR OTRO S/N'.
+               ACCEPT WS-RES.
+               IF WS-RES EQUAL 'S'
+                   MOVE 0 TO WS-FLAG
+                   OPEN INPUT EMPLEADO PERFORM 100-PROCESO.

@@ -27,7 +27,7 @@
       *INICIAMOS EL PROCESO ABRIENDO ARCHIVO HASTA 101 MAS.
        001-INI.
            PERFORM 100-ABRIR.
-           PERFORM 100-ID
+           PERFORM 100-ID.
            PERFORM 100-CONSULTA UNTIL WS-ID-EMPL = 99.
            PERFORM 101-MAS UNTIL WS-ID-EMPL = 99.
 
@@ -35,10 +35,14 @@
 
        100-ABRIR.
            OPEN INPUT EMPLEADO.
+       101-CERRAR.
+           CLOSE EMPLEADO.
 
        100-ID.
            DISPLAY 'ID'
            ACCEPT WS-ID-EMPL.
+           IF WS-ID-EMPL EQUAL 99
+               PERFORM 101-CERRAR.
 
        100-CONSULTA.
            READ EMPLEADO AT END CLOSE EMPLEADO
